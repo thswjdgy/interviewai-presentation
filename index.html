@@ -150,8 +150,8 @@ h2 { font-size:1.95rem; font-weight:800; line-height:1.2; margin-bottom:8px }
 .ic { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.35rem; margin-bottom:9px }
 
 /* ── MERMAID ── */
-.mermaid { width:100%; max-width:900px }
-.mermaid svg { max-height:340px !important }
+.mermaid { width:100%; max-width:1100px }
+.mermaid svg { width:100% !important; max-height:520px !important; height:520px !important }
 
 /* ── RESULT BOX ── */
 .rbox {
@@ -320,9 +320,9 @@ h2 { font-size:1.95rem; font-weight:800; line-height:1.2; margin-bottom:8px }
      SLIDE 5 — 아키텍처 (Mermaid)
 ══════════════════════════════════ -->
 <div class="slide bg5" id="s4">
-  <div class="hdr" style="margin-bottom:12px">
-    <div class="tag">🏗️ Architecture &nbsp;—&nbsp; 시스템 아키텍처 (Mermaid)</div>
-    <h2>Feature-First 레이어 구조 + 이중화 저장</h2>
+  <div class="hdr" style="margin-bottom:6px">
+    <div class="tag">🏗️ Architecture &nbsp;—&nbsp; 시스템 아키텍처</div>
+    <h2 style="font-size:1.5rem;margin-bottom:4px">Feature-First 레이어 구조 + 이중화 저장</h2>
   </div>
   <div class="mermaid">
 flowchart LR
@@ -415,7 +415,7 @@ mermaid.initialize({
     secondaryColor: '#1E1B4B',
     tertiaryColor: '#0D1117',
     fontFamily: "'Noto Sans KR', sans-serif",
-    fontSize: '13px',
+    fontSize: '16px',
     edgeLabelBackground: '#0D1117'
   }
 });
