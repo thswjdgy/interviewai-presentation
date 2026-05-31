@@ -4,7 +4,7 @@ AI 면접 코치 앱 **InterviewAI**의 GitHub Pages 발표 자료입니다.
 
 ## 📎 발표 URL
 ```
-https://{깃허브유저명}.github.io/interviewai-presentation/
+https://thswjdgy.github.io/interviewai-presentation/
 ```
 
 ## 슬라이드 구성
