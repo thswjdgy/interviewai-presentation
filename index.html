@@ -17,29 +17,6 @@ body {
   user-select: none;
 }
 
-/* ── TIMER (우상단 고정) ── */
-#timer {
-  position: fixed; top: 18px; right: 22px;
-  z-index: 999; text-align: center;
-}
-#tdisp {
-  font-size: 2.4rem; font-weight: 900;
-  letter-spacing: 2px; line-height: 1;
-  transition: color .3s;
-  text-shadow: 0 0 20px rgba(99,102,241,.6);
-}
-#tdisp.warn  { color: #FBBF24; text-shadow: 0 0 20px rgba(251,191,36,.6) }
-#tdisp.danger{ color: #F87171; text-shadow: 0 0 20px rgba(248,113,113,.6); animation: blink .8s infinite }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
-.tbrow { display:flex; gap:6px; margin-top:7px; justify-content:center }
-.tbtn {
-  padding: 4px 12px; border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.2);
-  background: rgba(255,255,255,.07);
-  color: #fff; font-size: .72rem; cursor: pointer;
-  font-family: inherit; transition: background .15s;
-}
-.tbtn:hover { background: rgba(255,255,255,.17) }
 
 /* ── PROGRESS BAR ── */
 #prog { position:fixed; bottom:0; left:0; right:0; height:3px; background:rgba(255,255,255,.06); z-index:999 }
@@ -188,15 +165,6 @@ h2 { font-size:1.95rem; font-weight:800; line-height:1.2; margin-bottom:8px }
 </head>
 <body>
 
-<!-- ────────── 2분 타이머 ────────── -->
-<div id="timer">
-  <div id="tdisp">2:00</div>
-  <div class="tbrow">
-    <button class="tbtn" onclick="startT()">▶ 시작</button>
-    <button class="tbtn" onclick="resetT()">↺ 초기화</button>
-  </div>
-</div>
-
 <!-- ────────── 진행바 ────────── -->
 <div id="prog"><div id="pbar" style="width:16.67%"></div></div>
 <div id="snum">1 / 6</div>
@@ -219,7 +187,7 @@ h2 { font-size:1.95rem; font-weight:800; line-height:1.2; margin-bottom:8px }
   <div style="margin-top:26px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
     <span class="chip"><span class="dot"></span>OpenAI Whisper STT</span>
     <span class="chip"><span class="dot"></span>Claude Sonnet 4.6</span>
-    <span class="chip"><span class="dot"></span>Flutter 3.41 / Dart 3.11</span>
+    <span class="chip"><span class="dot"></span>Flutter 3.41.4 / Dart 3.11.1</span>
     <span class="chip"><span class="dot"></span>Firebase Auth + Firestore</span>
     <span class="chip"><span class="dot"></span>GoRouter + Riverpod</span>
   </div>
@@ -232,22 +200,22 @@ h2 { font-size:1.95rem; font-weight:800; line-height:1.2; margin-bottom:8px }
   <div class="hdr">
     <div class="tag">📌 Problem Definition &nbsp;—&nbsp; 비전 및 문제 정의</div>
     <h2>취업 준비의 <span class="red">3가지 고통</span></h2>
-    <p class="sub" style="font-size:.92rem">국내 취준생 약 <strong>350만 명</strong> · 평균 취업 준비 기간 <strong>11개월</strong> · 청년 취업률 하락세</p>
+    <p class="sub" style="font-size:.92rem">국내 청년 취업준비자 약 <strong>67만 명</strong> · 평균 취업 준비 기간 <strong>11.5개월</strong>(역대 최장) · 청년 취업난 지속<br><span style="font-size:.72rem;color:rgba(255,255,255,.3)">※ 통계청 청년층부가조사, 2024년 5월</span></p>
   </div>
   <div class="grid g3">
     <div class="card">
       <div style="font-size:2rem;margin-bottom:10px">😰</div>
       <h3 style="font-size:1rem;margin-bottom:7px">혼자 연습의 한계</h3>
       <p style="color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.65">실제 면접 환경 재현 불가.<br>혼자 답변해도 객관적 피드백을 받을 방법이 없음</p>
-      <div class="snum red">73%</div>
-      <div class="slbl">취준생이 꼽은 가장 어려운 면접 준비 항목</div>
+      <div class="snum red">32.7%</div>
+      <div class="slbl">면접·토론 준비를 가장 어렵다고 꼽은 비율<br><span style="font-size:.65rem;color:rgba(255,255,255,.3)">잡코리아, 2023</span></div>
     </div>
     <div class="card hl">
       <div style="font-size:2rem;margin-bottom:10px">💸</div>
       <h3 style="font-size:1rem;margin-bottom:7px">높은 비용 장벽</h3>
       <p style="color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.65">면접 컨설팅 1회 = 10 ~ 30만 원.<br>반복 연습이 불가능한 금전적 부담</p>
-      <div class="snum yel">₩ 30만</div>
-      <div class="slbl">1회 면접 컨설팅 평균 비용</div>
+      <div class="snum yel">₩ 15만~</div>
+      <div class="slbl">1회 면접 컨설팅 평균 비용<br><span style="font-size:.65rem;color:rgba(255,255,255,.3)">숨고·크몽 플랫폼 기준, 2024</span></div>
     </div>
     <div class="card">
       <div style="font-size:2rem;margin-bottom:10px">📋</div>
@@ -414,6 +382,8 @@ flowchart LR
     <span class="chip">🔐 로그인 / 회원가입</span>
     <span class="chip">☁️ Firebase + 로컬 이중화</span>
     <span class="chip">🤖 GitHub Actions CI</span>
+    <span class="chip">🔗 결과 클립보드 공유</span>
+    <span class="chip">🔑 Google 로그인 (OAuth)</span>
   </div>
   <div class="rbox">
     <div class="rb" style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3)">
@@ -471,28 +441,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') go(cur-1);
 });
 
-/* ── 2분 타이머 ── */
-let secs = 120, ivl = null, running = false;
-
-function updDisp() {
-  const el = document.getElementById('tdisp');
-  el.textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
-  el.className = secs <= 10 ? 'danger' : secs <= 30 ? 'warn' : '';
-}
-
-function startT() {
-  if (running) return;
-  running = true;
-  ivl = setInterval(() => {
-    if (secs <= 0) { clearInterval(ivl); running=false; return; }
-    secs--; updDisp();
-  }, 1000);
-}
-
-function resetT() {
-  clearInterval(ivl); running=false;
-  secs = 120; updDisp();
-}
 </script>
 </body>
 </html>
