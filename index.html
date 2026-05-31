@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InterviewAI — AI 면접 코치 발표</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+html, body { width:100%; height:100%; overflow:hidden }
+body {
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  background: #0D1117;
+  color: #fff;
+  user-select: none;
+}
+
+/* ── TIMER (우상단 고정) ── */
+#timer {
+  position: fixed; top: 18px; right: 22px;
+  z-index: 999; text-align: center;
+}
+#tdisp {
+  font-size: 2.4rem; font-weight: 900;
+  letter-spacing: 2px; line-height: 1;
+  transition: color .3s;
+  text-shadow: 0 0 20px rgba(99,102,241,.6);
+}
+#tdisp.warn  { color: #FBBF24; text-shadow: 0 0 20px rgba(251,191,36,.6) }
+#tdisp.danger{ color: #F87171; text-shadow: 0 0 20px rgba(248,113,113,.6); animation: blink .8s infinite }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.tbrow { display:flex; gap:6px; margin-top:7px; justify-content:center }
+.tbtn {
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.07);
+  color: #fff; font-size: .72rem; cursor: pointer;
+  font-family: inherit; transition: background .15s;
+}
+.tbtn:hover { background: rgba(255,255,255,.17) }
+
+/* ── PROGRESS BAR ── */
+#prog { position:fixed; bottom:0; left:0; right:0; height:3px; background:rgba(255,255,255,.06); z-index:999 }
+#pbar { height:100%; background:linear-gradient(90deg,#4F46E5,#818CF8); transition:width .35s ease }
+
+/* ── SLIDE COUNTER & NAV HINT ── */
+#snum { position:fixed; bottom:12px; right:20px; font-size:.72rem; color:rgba(255,255,255,.3); z-index:999 }
+#nhint{ position:fixed; bottom:12px; left:50%; transform:translateX(-50%); font-size:.7rem; color:rgba(255,255,255,.22); z-index:999 }
+
+/* ── NAV ARROWS ── */
+.nav {
+  position:fixed; top:50%; transform:translateY(-50%);
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.35); font-size:1.6rem;
+  width:36px; height:56px; cursor:pointer; z-index:500;
+  border-radius:8px; transition:all .2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.nav:hover { background:rgba(255,255,255,.15); color:#fff }
+#nprev { left:10px } #nnext { right:10px }
+
+/* ── SLIDE CONTAINER ── */
+#deck { width:100%; height:100vh; position:relative }
+
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  padding:52px 72px 52px 72px;
+  opacity:0; transform:translateX(48px);
+  transition:opacity .38s ease, transform .38s ease;
+  pointer-events:none;
+}
+.slide.active { opacity:1; transform:translateX(0); pointer-events:all }
+.slide.out    { opacity:0; transform:translateX(-48px) }
+
+/* slide backgrounds */
+.bg1 { background: radial-gradient(ellipse 80% 80% at 20% 50%, rgba(79,70,229,.3) 0%, #0D1117 60%) }
+.bg2 { background: radial-gradient(ellipse 80% 80% at 75% 30%, rgba(180,20,80,.25) 0%, #0D1117 60%) }
+.bg3 { background: radial-gradient(ellipse 80% 80% at 25% 70%, rgba(5,120,60,.2) 0%, #0D1117 60%) }
+.bg4 { background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(10,40,80,.5) 0%, #0D1117 65%) }
+.bg5 { background: radial-gradient(ellipse 80% 80% at 70% 50%, rgba(60,10,100,.3) 0%, #0D1117 60%) }
+.bg6 { background: radial-gradient(ellipse 80% 80% at 30% 40%, rgba(10,50,80,.4) 0%, #0D1117 60%) }
+
+/* ── SECTION HEADER ── */
+.hdr { width:100%; margin-bottom:20px }
+.tag {
+  display:inline-block;
+  font-size:.67rem; font-weight:700; letter-spacing:3px;
+  text-transform:uppercase; color:#818CF8;
+  margin-bottom:10px;
+  padding:3px 10px; border:1px solid rgba(129,140,248,.3);
+  border-radius:20px; background:rgba(99,102,241,.08);
+}
+h1 {
+  font-size:3.6rem; font-weight:900; line-height:1.1;
+  background:linear-gradient(135deg,#fff 0%,#C7D2FE 60%,#818CF8 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:10px;
+}
+h2 { font-size:1.95rem; font-weight:800; line-height:1.2; margin-bottom:8px }
+.sub { font-size:1.1rem; color:rgba(255,255,255,.58); font-weight:400; line-height:1.65 }
+
+/* ── GRID ── */
+.grid { display:grid; gap:12px; width:100% }
+.g3 { grid-template-columns:repeat(3,1fr) }
+.g2 { grid-template-columns:repeat(2,1fr) }
+
+/* ── CARDS ── */
+.card {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px; padding:20px 18px;
+  transition:border-color .2s, background .2s;
+}
+.card:hover { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.15) }
+.card.hl { border-color:rgba(99,102,241,.4); background:rgba(99,102,241,.09) }
+.card.hl2{ border-color:rgba(245,158,11,.35); background:rgba(245,158,11,.07) }
+.card.hl3{ border-color:rgba(16,185,129,.35); background:rgba(16,185,129,.07) }
+
+/* ── STAT ── */
+.snum { font-size:2.6rem; font-weight:900; line-height:1; margin-top:12px }
+.slbl { font-size:.8rem; color:rgba(255,255,255,.45); margin-top:3px }
+.red  { color:#F87171 } .yel { color:#FBBF24 } .grn { color:#34D399 } .ind { color:#818CF8 }
+
+/* ── WBS TABLE ── */
+.wt { width:100%; border-collapse:separate; border-spacing:0 5px; font-size:.82rem }
+.wt th {
+  font-size:.62rem; font-weight:700; letter-spacing:2px;
+  color:rgba(255,255,255,.3); text-transform:uppercase;
+  padding:6px 13px; text-align:left;
+}
+.wt td {
+  padding:10px 13px;
+  background:rgba(255,255,255,.034);
+  border-top:1px solid rgba(255,255,255,.055);
+  border-bottom:1px solid rgba(255,255,255,.055);
+  line-height:1.4;
+}
+.wt td:first-child { border-left:1px solid rgba(255,255,255,.055); border-radius:10px 0 0 10px }
+.wt td:last-child  { border-right:1px solid rgba(255,255,255,.055); border-radius:0 10px 10px 0 }
+.wt tr:hover td { background:rgba(255,255,255,.055) }
+.ph  { font-weight:700; font-size:.88rem }
+.phs { font-size:.72rem; color:rgba(255,255,255,.4); display:block; margin-top:1px }
+.wkc { color:rgba(255,255,255,.38); font-size:.78rem }
+.badge { display:inline-block; padding:2px 10px; border-radius:20px; font-size:.7rem; font-weight:600 }
+.done { background:rgba(16,185,129,.12); color:#34D399; border:1px solid rgba(16,185,129,.22) }
+.tdesc{ color:rgba(255,255,255,.7); font-size:.8rem }
+.tout { color:rgba(255,255,255,.5); font-size:.78rem }
+
+/* ── CHIP ── */
+.chip {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 12px; border-radius:20px;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  font-size:.78rem; margin:3px; white-space:nowrap;
+}
+.dot { width:5px; height:5px; border-radius:50%; background:#818CF8; flex-shrink:0 }
+
+/* ── LOGO ── */
+.logobox {
+  width:68px; height:68px;
+  background:linear-gradient(135deg,#4F46E5,#818CF8);
+  border-radius:16px; display:flex; align-items:center;
+  justify-content:center; font-size:2rem;
+  box-shadow:0 12px 36px rgba(79,70,229,.5);
+  margin-bottom:18px;
+}
+
+/* ── ICON CIRCLE ── */
+.ic { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.35rem; margin-bottom:9px }
+
+/* ── MERMAID ── */
+.mermaid { width:100%; max-width:900px }
+.mermaid svg { max-height:340px !important }
+
+/* ── RESULT BOX ── */
+.rbox {
+  display:flex; gap:12px; width:100%; max-width:720px; margin-top:6px;
+}
+.rb {
+  flex:1; padding:14px 16px;
+  border-radius:12px; text-align:center;
+}
+</style>
+</head>
+<body>
+
+<!-- ────────── 2분 타이머 ────────── -->
+<div id="timer">
+  <div id="tdisp">2:00</div>
+  <div class="tbrow">
+    <button class="tbtn" onclick="startT()">▶ 시작</button>
+    <button class="tbtn" onclick="resetT()">↺ 초기화</button>
+  </div>
+</div>
+
+<!-- ────────── 진행바 ────────── -->
+<div id="prog"><div id="pbar" style="width:16.67%"></div></div>
+<div id="snum">1 / 6</div>
+<div id="nhint">← → 키  또는  버튼으로 슬라이드 이동</div>
+
+<!-- ────────── 이전 / 다음 버튼 ────────── -->
+<button class="nav" id="nprev" onclick="go(cur-1)">&#8249;</button>
+<button class="nav" id="nnext" onclick="go(cur+1)">&#8250;</button>
+
+<div id="deck">
+
+<!-- ══════════════════════════════════
+     SLIDE 1 — 타이틀
+══════════════════════════════════ -->
+<div class="slide bg1 active" id="s0">
+  <div class="logobox">🎤</div>
+  <div class="tag">AI Interview Coaching App &nbsp;·&nbsp; Flutter + Claude AI</div>
+  <h1>InterviewAI</h1>
+  <p class="sub">음성으로 연습하고, AI가 피드백하는<br>실전형 면접 시뮬레이션 플랫폼</p>
+  <div style="margin-top:26px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+    <span class="chip"><span class="dot"></span>OpenAI Whisper STT</span>
+    <span class="chip"><span class="dot"></span>Claude Sonnet 4.6</span>
+    <span class="chip"><span class="dot"></span>Flutter 3.41 / Dart 3.11</span>
+    <span class="chip"><span class="dot"></span>Firebase Auth + Firestore</span>
+    <span class="chip"><span class="dot"></span>GoRouter + Riverpod</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SLIDE 2 — 문제 정의 (비전)
+══════════════════════════════════ -->
+<div class="slide bg2" id="s1">
+  <div class="hdr">
+    <div class="tag">📌 Problem Definition &nbsp;—&nbsp; 비전 및 문제 정의</div>
+    <h2>취업 준비의 <span class="red">3가지 고통</span></h2>
+    <p class="sub" style="font-size:.92rem">국내 취준생 약 <strong>350만 명</strong> · 평균 취업 준비 기간 <strong>11개월</strong> · 청년 취업률 하락세</p>
+  </div>
+  <div class="grid g3">
+    <div class="card">
+      <div style="font-size:2rem;margin-bottom:10px">😰</div>
+      <h3 style="font-size:1rem;margin-bottom:7px">혼자 연습의 한계</h3>
+      <p style="color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.65">실제 면접 환경 재현 불가.<br>혼자 답변해도 객관적 피드백을 받을 방법이 없음</p>
+      <div class="snum red">73%</div>
+      <div class="slbl">취준생이 꼽은 가장 어려운 면접 준비 항목</div>
+    </div>
+    <div class="card hl">
+      <div style="font-size:2rem;margin-bottom:10px">💸</div>
+      <h3 style="font-size:1rem;margin-bottom:7px">높은 비용 장벽</h3>
+      <p style="color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.65">면접 컨설팅 1회 = 10 ~ 30만 원.<br>반복 연습이 불가능한 금전적 부담</p>
+      <div class="snum yel">₩ 30만</div>
+      <div class="slbl">1회 면접 컨설팅 평균 비용</div>
+    </div>
+    <div class="card">
+      <div style="font-size:2rem;margin-bottom:10px">📋</div>
+      <h3 style="font-size:1rem;margin-bottom:7px">공통 질문의 한계</h3>
+      <p style="color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.65">기출문제집은 범용 질문만 제공.<br>내 자소서·직무에 맞는 압박 질문은 없음</p>
+      <div class="snum grn">100%</div>
+      <div class="slbl">AI가 자소서 분석 → 완전 맞춤형 질문</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SLIDE 3 — 솔루션
+══════════════════════════════════ -->
+<div class="slide bg3" id="s2">
+  <div class="hdr">
+    <div class="tag">💡 Solution &nbsp;—&nbsp; 해결책 및 핵심 가치</div>
+    <h2>AI 면접 코치, <span class="grn">InterviewAI</span></h2>
+    <p class="sub" style="font-size:.9rem">
+      자소서 입력 &nbsp;→&nbsp; AI 맞춤 질문 &nbsp;→&nbsp; 음성 답변 &nbsp;→&nbsp;
+      STT 변환 &nbsp;→&nbsp; 말버릇·STAR 분석 &nbsp;→&nbsp; 모범 답변 제시
+    </p>
+  </div>
+  <div class="grid g3">
+    <div class="card hl">
+      <div class="ic" style="background:rgba(99,102,241,.18)">📝</div>
+      <h3 style="font-size:.95rem;margin-bottom:6px">맞춤 질문 생성</h3>
+      <p style="color:rgba(255,255,255,.54);font-size:.8rem;line-height:1.65">자소서 + 채용공고 동시 분석<br>4가지 페르소나 면접관 선택<br>꼬리 질문(압박 면접) 자동 생성</p>
+    </div>
+    <div class="card hl3">
+      <div class="ic" style="background:rgba(16,185,129,.18)">🎙️</div>
+      <h3 style="font-size:.95rem;margin-bottom:6px">실전 면접 환경</h3>
+      <p style="color:rgba(255,255,255,.54);font-size:.8rem;line-height:1.65">TTS 음성 질문 자동 재생<br>연습 모드 (STAR 힌트)<br>실전 모드 (30초 준비 + 2분 제한)</p>
+    </div>
+    <div class="card hl2">
+      <div class="ic" style="background:rgba(245,158,11,.18)">📊</div>
+      <h3 style="font-size:.95rem;margin-bottom:6px">다차원 AI 분석</h3>
+      <p style="color:rgba(255,255,255,.54);font-size:.8rem;line-height:1.65">STAR 구조 평가 + 모범 답변<br>말버릇 감지 (어·음·그니까…)<br>발화 속도 측정 (분당 글자 수)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SLIDE 4 — WBS
+══════════════════════════════════ -->
+<div class="slide bg4" id="s3">
+  <div class="hdr">
+    <div class="tag">📅 WBS &nbsp;—&nbsp; Work Breakdown Structure &nbsp;·&nbsp; 10 – 16주차</div>
+    <h2>5 Phase 개발 로드맵</h2>
+  </div>
+  <table class="wt">
+    <thead>
+      <tr>
+        <th style="width:13%">Phase</th>
+        <th style="width:7%">주차</th>
+        <th style="width:34%">주요 작업</th>
+        <th style="width:32%">산출물</th>
+        <th style="width:9%">상태</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="ph">Phase 1</span><span class="phs">초기화 &amp; 문서</span></td>
+        <td class="wkc">10주</td>
+        <td class="tdesc">Flutter 프로젝트 구조 설정 · 기획 문서(WBS/ADR/PRD) · 환경 변수 설정</td>
+        <td class="tout">.planning/ · CLAUDE.md · AGENTS.md · ADR 3종</td>
+        <td><span class="badge done">✅ 완료</span></td>
+      </tr>
+      <tr>
+        <td><span class="ph">Phase 2</span><span class="phs">STT 파이프라인</span></td>
+        <td class="wkc">11주</td>
+        <td class="tdesc">flutter_sound 녹음 서비스 · Whisper API 클라이언트 · TTS 서비스</td>
+        <td class="tout">음성 → 텍스트 변환 동작 확인</td>
+        <td><span class="badge done">✅ 완료</span></td>
+      </tr>
+      <tr>
+        <td><span class="ph">Phase 3</span><span class="phs">AI 피드백 엔진</span></td>
+        <td class="wkc">12주</td>
+        <td class="tdesc">Claude 피드백 · 꼬리 질문 · 자소서/채용공고 질문 생성 · 페르소나 · 모드 · 말하기 분석</td>
+        <td class="tout">InterviewScreen · FeedbackScreen · 말버릇 분석</td>
+        <td><span class="badge done">✅ 완료</span></td>
+      </tr>
+      <tr>
+        <td><span class="ph">Phase 4</span><span class="phs">Firebase + 히스토리</span></td>
+        <td class="wkc">13–14주</td>
+        <td class="tdesc">Firebase Auth(Google + Email) · Firestore 세션 저장 · 히스토리 화면 · 점수 차트 · 취약점 태그</td>
+        <td class="tout">HistoryScreen · SessionDetailScreen · 연속 학습 뱃지</td>
+        <td><span class="badge done">✅ 완료</span></td>
+      </tr>
+      <tr>
+        <td><span class="ph">Phase 5</span><span class="phs">배포 &amp; 발표</span></td>
+        <td class="wkc">15–16주</td>
+        <td class="tdesc">GitHub Actions CI(analyze→test→build-apk) · docs/ 문서화 · README · 발표 자료 (GitHub Pages)</td>
+        <td class="tout">자동 APK 빌드 · 발표 페이지 (지금 이 페이지)</td>
+        <td><span class="badge done">✅ 완료</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════
+     SLIDE 5 — 아키텍처 (Mermaid)
+══════════════════════════════════ -->
+<div class="slide bg5" id="s4">
+  <div class="hdr" style="margin-bottom:12px">
+    <div class="tag">🏗️ Architecture &nbsp;—&nbsp; 시스템 아키텍처 (Mermaid)</div>
+    <h2>Feature-First 레이어 구조 + 이중화 저장</h2>
+  </div>
+  <div class="mermaid">
+flowchart LR
+    User(["👤 사용자"]) --> App
+
+    subgraph App["🟣 Flutter App (Client)"]
+        direction TB
+        UI["UI Layer\nGoRouter · Riverpod"]
+        Feat["Feature Layer\nauth · interview\nfeedback · history · result"]
+        Core["Core Layer\nAPI Clients · Services"]
+        UI --> Feat --> Core
+    end
+
+    subgraph AI["🟢 외부 AI 서비스"]
+        W["OpenAI Whisper\n음성 → 텍스트 (STT)"]
+        C["Anthropic Claude Sonnet 4.6\n질문 생성 · 꼬리 질문 · 피드백"]
+    end
+
+    subgraph Store["🟤 데이터 저장 (이중화)"]
+        FB["Firebase\nAuth + Firestore"]
+        SP["SharedPreferences\n로컬 fallback"]
+    end
+
+    Core -->|"STT 요청"| W
+    Core -->|"질문 생성 / 피드백"| C
+    Core -->|"세션 저장 (우선)"| FB
+    Core -->|"로컬 fallback"| SP
+    Core -->|"TTS"| TTS["🔊 flutter_tts\n질문 음성 재생"]
+
+    style App   fill:#1E1B4B,stroke:#6366F1,color:#fff
+    style AI    fill:#14532D,stroke:#22C55E,color:#fff
+    style Store fill:#1C1917,stroke:#78716C,color:#fff
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SLIDE 6 — 기능 요약 & 클로징
+══════════════════════════════════ -->
+<div class="slide bg6" id="s5">
+  <div class="hdr">
+    <div class="tag">🎯 Key Features &amp; Closing</div>
+    <h2>🎤 InterviewAI &nbsp;—&nbsp; 핵심 기능 요약</h2>
+    <p class="sub" style="font-size:.9rem">취준생 누구나, 무료로, 실전과 동일한 AI 면접 환경 제공</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-bottom:18px">
+    <span class="chip">📝 자소서 맞춤 질문</span>
+    <span class="chip">🏢 채용공고 분석</span>
+    <span class="chip">👔 4가지 페르소나</span>
+    <span class="chip">🔁 꼬리 질문 (압박)</span>
+    <span class="chip">⏱️ 실전 타이머 모드</span>
+    <span class="chip">📊 STAR 구조 분석</span>
+    <span class="chip">🌟 AI 모범 답변 제시</span>
+    <span class="chip">🗣️ 말버릇 감지</span>
+    <span class="chip">💨 발화 속도 측정</span>
+    <span class="chip">📈 면접 히스토리</span>
+    <span class="chip">🔥 연속 학습 뱃지</span>
+    <span class="chip">🔐 로그인 / 회원가입</span>
+    <span class="chip">☁️ Firebase + 로컬 이중화</span>
+    <span class="chip">🤖 GitHub Actions CI</span>
+  </div>
+  <div class="rbox">
+    <div class="rb" style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.3)">
+      <div style="font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:4px">TECH STACK</div>
+      <div style="font-weight:700;font-size:.9rem">Flutter 3.41 · Dart 3.11 · Claude Sonnet 4.6<br>Firebase · GoRouter · Riverpod</div>
+    </div>
+    <div class="rb" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25)">
+      <div style="font-size:.72rem;color:rgba(255,255,255,.4);margin-bottom:4px">CI / 품질</div>
+      <div style="font-weight:700;font-size:.9rem;color:#34D399">
+        flutter analyze &nbsp;✅&nbsp; No issues<br>
+        flutter test &nbsp;✅&nbsp; 11 / 11 pass
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#deck -->
+
+<script>
+/* ── Mermaid ── */
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'dark',
+  themeVariables: {
+    primaryColor: '#6366F1',
+    primaryTextColor: '#e2e8f0',
+    primaryBorderColor: '#818CF8',
+    lineColor: '#6366F1',
+    secondaryColor: '#1E1B4B',
+    tertiaryColor: '#0D1117',
+    fontFamily: "'Noto Sans KR', sans-serif",
+    fontSize: '13px',
+    edgeLabelBackground: '#0D1117'
+  }
+});
+
+/* ── Slides ── */
+const slides = document.querySelectorAll('.slide');
+const N = slides.length;
+let cur = 0;
+
+function go(n) {
+  if (n < 0 || n >= N) return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.add('out');
+  const old = cur; cur = n;
+  slides[cur].classList.add('active');
+  setTimeout(() => slides[old].classList.remove('out'), 400);
+  document.getElementById('snum').textContent = (cur+1) + ' / ' + N;
+  document.getElementById('pbar').style.width = ((cur+1)/N*100) + '%';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(cur+1); }
+  if (e.key === 'ArrowLeft') go(cur-1);
+});
+
+/* ── 2분 타이머 ── */
+let secs = 120, ivl = null, running = false;
+
+function updDisp() {
+  const el = document.getElementById('tdisp');
+  el.textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
+  el.className = secs <= 10 ? 'danger' : secs <= 30 ? 'warn' : '';
+}
+
+function startT() {
+  if (running) return;
+  running = true;
+  ivl = setInterval(() => {
+    if (secs <= 0) { clearInterval(ivl); running=false; return; }
+    secs--; updDisp();
+  }, 1000);
+}
+
+function resetT() {
+  clearInterval(ivl); running=false;
+  secs = 120; updDisp();
+}
+</script>
+</body>
+</html>
