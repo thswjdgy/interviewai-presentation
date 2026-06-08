@@ -163,8 +163,8 @@ h2 { font-size:2.2rem; font-weight:800; line-height:1.2; margin-bottom:10px }
 <body>
 
 <!-- ────────── 진행바 ────────── -->
-<div id="prog"><div id="pbar" style="width:16.67%"></div></div>
-<div id="snum">1 / 6</div>
+<div id="prog"><div id="pbar" style="width:14.29%"></div></div>
+<div id="snum">1 / 7</div>
 <div id="nhint">← → 키  또는  버튼으로 슬라이드 이동</div>
 
 <!-- ────────── 이전 / 다음 버튼 ────────── -->
@@ -305,7 +305,28 @@ h2 { font-size:2.2rem; font-weight:800; line-height:1.2; margin-bottom:10px }
 </div>
 
 <!-- ══════════════════════════════════
-     SLIDE 4 — WBS
+     SLIDE 4 — 데모 영상
+══════════════════════════════════ -->
+<div class="slide bg3" id="s3v">
+  <div class="hdr" style="margin-bottom:16px">
+    <div class="tag">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/>
+      </svg>
+      Live Demo &nbsp;—&nbsp; 앱 실제 작동 화면
+    </div>
+    <h2>30초 데모</h2>
+    <p class="sub" style="font-size:1rem">음성 녹음 → AI 질문 생성 → STT 변환 → 피드백까지 한 사이클</p>
+  </div>
+  <video id="demoVideo" controls
+    style="max-width:820px;width:100%;border-radius:14px;box-shadow:0 8px 40px rgba(0,0,0,.6);outline:none;background:#000">
+    <source src="demo.mp4" type="video/mp4">
+  </video>
+</div>
+
+<!-- ══════════════════════════════════
+     SLIDE 5 — WBS
 ══════════════════════════════════ -->
 <div class="slide bg4" id="s3">
   <div class="hdr">
@@ -517,6 +538,8 @@ let cur = 0;
 
 function go(n) {
   if (n < 0 || n >= N) return;
+  const vid = document.getElementById('demoVideo');
+  if (vid) vid.pause();
   slides[cur].classList.remove('active');
   slides[cur].classList.add('out');
   const old = cur; cur = n;
