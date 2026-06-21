@@ -36,51 +36,35 @@
   }
   .slide.active{display:flex;}
 
-  /* top-right timer */
-  .timer-box{
-    position:fixed;top:36px;right:48px;z-index:50;
-    display:flex;flex-direction:column;align-items:flex-end;gap:8px;
-  }
-  .timer-display{
-    font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:34px;color:var(--text);
-    letter-spacing:.02em;
-  }
-  .timer-display.warn{color:var(--coral);}
-  .timer-controls{display:flex;gap:8px;}
-  .timer-btn{
-    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mute);
-    background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 14px;
-    cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;
-  }
-  .timer-btn:hover{border-color:var(--mint);color:var(--mint);}
-  .timer-btn svg{width:13px;height:13px;}
-
   /* nav arrows */
   .nav-arrow{
     position:fixed;top:50%;transform:translateY(-50%);z-index:50;
-    width:48px;height:48px;border-radius:50%;
+    width:52px;height:52px;border-radius:50%;
     background:#fff;border:1px solid var(--line);
+    box-shadow:0 2px 10px rgba(19,27,48,.06);
     display:flex;align-items:center;justify-content:center;
-    cursor:pointer;transition:.15s;
+    cursor:pointer;transition:.18s ease;
   }
-  .nav-arrow:hover{border-color:var(--mint);}
-  .nav-arrow svg{width:20px;height:20px;stroke:var(--text);fill:none;stroke-width:2;}
-  .nav-arrow.prev{left:28px;}
-  .nav-arrow.next{right:28px;}
-  .nav-arrow:disabled{opacity:.25;cursor:default;}
+  .nav-arrow:hover{border-color:var(--mint);box-shadow:0 4px 14px rgba(0,201,167,.18);transform:translateY(-52%);}
+  .nav-arrow svg{width:21px;height:21px;stroke:var(--text);fill:none;stroke-width:2;}
+  .nav-arrow.prev{left:32px;}
+  .nav-arrow.next{right:32px;}
+  .nav-arrow:disabled{opacity:.22;cursor:default;box-shadow:none;}
+  .nav-arrow:disabled:hover{transform:translateY(-50%);border-color:var(--line);}
 
   /* bottom-right page counter */
   .page-counter{
-    position:fixed;bottom:30px;right:48px;z-index:50;
+    position:fixed;bottom:32px;right:48px;z-index:50;
     font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--mute);
+    letter-spacing:.02em;
   }
-  .page-counter b{color:var(--text);}
+  .page-counter b{color:var(--text);font-weight:700;}
 
   /* bottom progress bar */
   .progress-track{
-    position:fixed;bottom:0;left:0;right:0;height:4px;background:var(--line);z-index:50;
+    position:fixed;bottom:0;left:0;right:0;height:3px;background:var(--line);z-index:50;
   }
-  .progress-fill{height:100%;background:var(--mint);transition:width .3s ease;}
+  .progress-fill{height:100%;background:var(--mint);transition:width .35s cubic-bezier(.4,0,.2,1);}
 
   /* shared content styles */
   .eyebrow{
@@ -97,7 +81,7 @@
   h1.slide-title .accent{color:var(--mint);}
   h1.slide-title .warn{color:var(--coral);}
   .lede{font-size:24px;color:var(--mute);margin-bottom:28px;line-height:1.55;max-width:920px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px 28px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px 30px;box-shadow:0 1px 3px rgba(19,27,48,.04);}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
   ul.plain{list-style:none;}
@@ -111,11 +95,12 @@
   }
   table.tbl td{padding:13px 16px;border-bottom:1px solid var(--line);}
   table.tbl tr:last-child td{border-bottom:1.5px solid var(--text);font-weight:700;}
-  .callout{border-left:4px solid var(--coral);background:#fff;padding:18px 22px;font-size:20px;color:var(--text);border-radius:0 8px 8px 0;}
+  .callout{border-left:4px solid var(--coral);background:#fff;padding:20px 24px;font-size:20px;color:var(--text);border-radius:0 10px 10px 0;box-shadow:0 1px 3px rgba(19,27,48,.04);}
   .mono{font-family:'IBM Plex Mono',monospace;}
   .tag{
     display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:16px;
-    border:1px solid var(--line);padding:6px 14px;border-radius:20px;margin-right:8px;margin-bottom:8px;color:var(--mute);background:#fff;
+    border:1px solid var(--line);padding:7px 15px;border-radius:20px;margin-right:8px;margin-bottom:8px;color:var(--mute);background:#fff;
+    box-shadow:0 1px 2px rgba(19,27,48,.03);
   }
   .timeline{display:flex;flex-direction:column;margin-top:8px;}
   .tl-row{display:flex;align-items:center;gap:22px;padding:11px 0;border-bottom:1px solid var(--line);}
@@ -142,7 +127,7 @@
   .chain-sub{font-size:15px;color:var(--mute);margin-top:4px;}
   .chain-arrow{width:32px;color:var(--mute);text-align:center;font-size:22px;margin-top:-32px;}
   .arch{display:flex;flex-direction:column;gap:12px;margin-top:14px;}
-  .arch-layer{display:flex;align-items:center;gap:18px;padding:17px 22px;border:1px solid var(--line);border-radius:8px;background:#fff;}
+  .arch-layer{display:flex;align-items:center;gap:18px;padding:18px 24px;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(19,27,48,.04);}
   .arch-layer .name{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:17px;width:110px;color:var(--mint);}
   .arch-layer .desc{font-size:18px;color:var(--text);}
   .arch-arrow{text-align:center;color:var(--mute);font-size:17px;margin:-4px 0;font-family:'IBM Plex Mono',monospace;}
@@ -156,20 +141,23 @@
   .step-body .text{font-size:19px;line-height:1.55;}
   .quote-box{
     background:#fff;border:1px solid var(--line);border-left:4px solid var(--mint);
-    border-radius:0 8px 8px 0;padding:20px 24px;font-size:18px;line-height:1.6;color:var(--text);margin-top:18px;
+    border-radius:0 10px 10px 0;padding:22px 26px;font-size:18px;line-height:1.65;color:var(--text);margin-top:18px;
+    box-shadow:0 1px 3px rgba(19,27,48,.04);
   }
   .quote-box .who{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--mute);margin-bottom:8px;letter-spacing:.06em;}
   .code-block{
-    background:#11161F;color:#D9F7EE;border-radius:8px;padding:20px 24px;
-    font-family:'IBM Plex Mono',monospace;font-size:17px;line-height:1.75;
+    background:#11161F;color:#D9F7EE;border-radius:10px;padding:22px 26px;
+    font-family:'IBM Plex Mono',monospace;font-size:17px;line-height:1.8;
+    box-shadow:0 2px 8px rgba(19,27,48,.08);
   }
   .code-block .cmt{color:#6B7280;}
 
   /* TITLE */
   .title-slide{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative;height:100%;}
   .title-mark{
-    width:60px;height:60px;border-radius:16px;background:var(--mint);
+    width:60px;height:60px;border-radius:18px;background:var(--mint);
     display:flex;align-items:center;justify-content:center;margin-bottom:30px;
+    box-shadow:0 4px 16px rgba(0,201,167,.28);
   }
   .title-mark svg{width:30px;height:30px;stroke:#fff;fill:none;stroke-width:2;}
   .title-app{font-family:'Outfit',sans-serif;font-weight:800;font-size:88px;letter-spacing:-.02em;line-height:1;}
@@ -196,7 +184,7 @@
       <div class="title-app">v-view</div>
       <div class="title-tag">시선까지 잡아주는 AI 면접 코치 — 혼자서도, 실전처럼</div>
       <div class="title-meta">
-        <span>손정협 · 손정효</span><span class="dot"></span>
+        <span>손정효</span><span class="dot"></span>
         <span>최종발표 2026-06-22</span><span class="dot"></span>
         <span>github.com/thswjdguq/v-view</span>
       </div>
@@ -296,9 +284,9 @@
       <div class="chain-arrow">→</div>
       <div class="chain-step"><div class="chain-num">3</div><div class="chain-label">개발</div><div class="chain-sub">Claude Code</div></div>
       <div class="chain-arrow">→</div>
-      <div class="chain-step"><div class="chain-num">4</div><div class="chain-label">검토</div><div class="chain-sub">손정협 · 손정효</div></div>
+      <div class="chain-step"><div class="chain-num">4</div><div class="chain-label">검토</div><div class="chain-sub">손정효</div></div>
     </div>
-    <div class="callout" style="margin-top:30px;">전 산출물을 두 사람이 직접 검수·의사결정 (Human-in-the-Loop) · GitHub 56 커밋 · week1~8 브랜치로 주차별 기록</div>
+    <div class="callout" style="margin-top:30px;">전 산출물을 직접 검수·의사결정 (Human-in-the-Loop) · GitHub 56 커밋 · week1~8 브랜치로 주차별 기록</div>
   </div>
 
   <!-- ⑦ 구현 방법 -->
@@ -341,7 +329,7 @@
     </div>
     <div class="quote-box">
       <div class="who">발표 멘트</div>
-      "카메라가 주는 이미지 형식과 시선 인식 라이브러리가 요구하는 형식이 달라서 인식이 안 됐고, 그 사이를 변환해주는 코드를 넣어 해결했습니다. 구현은 Claude Code가, 원인 분석과 검증은 저희가 했습니다."
+      "카메라가 주는 이미지 형식과 시선 인식 라이브러리가 요구하는 형식이 달라서 인식이 안 됐고, 그 사이를 변환해주는 코드를 넣어 해결했습니다. 구현은 Claude Code가, 원인 분석과 검증은 제가 했습니다."
     </div>
   </div>
 
@@ -370,10 +358,10 @@
       <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><b>단일 명세 파일</b> — AUTHORING.md 하나로 AGENTS.md · CLAUDE.md · ARCHITECTURE · ADR · SETUP · DEPLOY · TESTING 문서 전체 재생성</li>
       <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span><b>세션 루틴 & 자기 점검</b> — 세션 시작 루틴 + 커밋 전 자기 점검 체크리스트로 AI가 만든 코드를 직접 설명 가능하게 보장</li>
     </ul>
-    <div class="callout" style="margin-top:24px;font-weight:700;">핵심 원칙 — 구현은 AI가, 판단과 설명은 저희가</div>
+    <div class="callout" style="margin-top:24px;font-weight:700;">핵심 원칙 — 구현은 AI가, 판단과 설명은 제가</div>
     <div class="quote-box">
       <div class="who">발표 멘트 (30초)</div>
-      "코드는 AI가 짜지만, AUTHORING.md 파일 하나로 AGENTS.md · CLAUDE.md · 아키텍처 · ADR · 운영 문서를 전부 재생성하도록 통합했습니다. 커밋 전 자기 점검으로 AI가 만든 걸 저희가 이해 · 설명할 수 있게 보장합니다."
+      "코드는 AI가 짜지만, AUTHORING.md 파일 하나로 AGENTS.md · CLAUDE.md · 아키텍처 · ADR · 운영 문서를 전부 재생성하도록 통합했습니다. 커밋 전 자기 점검으로 AI가 만든 걸 제가 이해 · 설명할 수 있게 보장합니다."
     </div>
   </div>
 
@@ -411,7 +399,7 @@
         <span class="tag">통합 테스트(integration_test) 추가</span><span class="tag">Firebase App Distribution 실배포</span><span class="tag">음성 STT · 표정 분석 확장</span>
       </div>
       <div class="thanks">감사합니다</div>
-      <div class="who">v-view · 손정협 · 손정효</div>
+      <div class="who">v-view · 손정효</div>
     </div>
   </div>
 
