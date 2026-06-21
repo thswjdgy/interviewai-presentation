@@ -316,6 +316,22 @@
     <div class="small" style="margin-top:22px;font-size:20px;">의존 방향: ui → state → domain ← data · 원본 영상은 저장하지 않음</div>
   </div>
 
+  <!-- ⑧-2 ADR -->
+  <div class="slide">
+    <div class="eyebrow"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>ADR · 기술 의사결정</div>
+    <h1 class="slide-title">왜 이 기술을 <span class="accent">선택했나</span></h1>
+    <table class="tbl">
+      <tr><th>ADR</th><th>결정</th><th>기각 대안 · 이유</th></tr>
+      <tr><td class="mono">001</td><td>Flutter</td><td>React Native · 네이티브 분리 — 단일 코드베이스로 iOS/Android 동시 대응</td></tr>
+      <tr><td class="mono">002</td><td>Riverpod</td><td>Provider · BLoC · GetX — 테스트 용이성과 타입 안전성</td></tr>
+      <tr><td class="mono">003</td><td>OpenAI gpt-4o-mini</td><td>Gemini · 온디바이스 LLM — 한국어 품질과 JSON 응답 안정성</td></tr>
+      <tr><td class="mono">004</td><td>ML Kit</td><td>MediaPipe · 자체 TFLite — 온디바이스 처리로 영상 미저장, 빠른 통합</td></tr>
+      <tr><td class="mono">005</td><td>Hive</td><td>SQLite · Isar — 가벼운 로컬 캐시 용도에 충분, 빌드 의존성 단순</td></tr>
+    </table>
+    <div class="small" style="margin-top:18px;font-size:19px;">각 ADR: Context · Decision · Status · Consequence + 기각 이유 (<span class="mono">docs/ADR/</span>)</div>
+    <div class="callout" style="margin-top:14px;padding:16px 20px;font-size:18px;border-left-color:var(--mint);">GitHub: github.com/thswjdguq/v-view · README에 Setup · Deploy · Testing · ADR 인덱스 제공</div>
+  </div>
+
   <!-- ⑨ 시행착오 -->
   <div class="slide">
     <div class="eyebrow"><svg class="icon warn" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg>TROUBLESHOOTING</div>
@@ -329,6 +345,29 @@
     <div class="quote-box">
       <div class="who">발표 멘트</div>
       "카메라가 주는 이미지 형식과 시선 인식 라이브러리가 요구하는 형식이 달라서 인식이 안 됐고, 그 사이를 변환해주는 코드를 넣어 해결했습니다. 구현은 Claude Code가, 원인 분석과 검증은 제가 했습니다."
+    </div>
+  </div>
+
+  <!-- ⑨-2 개발환경 + 빌드/배포 -->
+  <div class="slide">
+    <div class="eyebrow"><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>SETUP · BUILD · DEPLOY</div>
+    <h1 class="slide-title">개발 환경부터 <span class="accent">빌드 · 배포까지</span></h1>
+    <div class="grid2">
+      <div class="card">
+        <div style="font-weight:700;font-size:21px;margin-bottom:18px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">개발 환경 — 5분 셋업</div>
+        <div class="code-block" style="font-size:17px;padding:18px 20px;">
+          git clone .../v-view<br>
+          flutter pub get<br>
+          .env 에 OPENAI_API_KEY 입력<br>
+          flutter run
+        </div>
+        <div class="small" style="margin-top:14px;font-size:16px;">Flutter 3.38.9 · JDK 17 · API 키 하드코딩 금지</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;font-size:21px;margin-bottom:18px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">빌드 → 배포</div>
+        <div class="code-block" style="font-size:17px;padding:18px 20px;">flutter build apk --release</div>
+        <div class="small" style="margin-top:14px;font-size:16px;">서명: key.properties + jks · 배포: Firebase App Distribution (파이프라인 준비 완료, 외부 배포 예정)</div>
+      </div>
     </div>
   </div>
 
@@ -347,6 +386,30 @@
     </table>
     <div class="small" style="margin-top:16px;font-size:19px;">핵심 검증: 시선 분산 연속 1초 기준 · 응시율 공식 · 상태 전환 · AI 실패 fallback · 실행: <span class="mono">flutter test</span></div>
     <div class="callout" style="margin-top:14px;padding:18px 22px;font-size:21px;">통합 테스트는 에뮬레이터 카메라 한계로 미실시, 실기기 자동화는 다음 단계</div>
+  </div>
+
+  <!-- ⑩-2 성능 최적화 + 코드 품질 -->
+  <div class="slide">
+    <div class="eyebrow"><svg class="icon" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>PERFORMANCE · CODE QUALITY</div>
+    <h1 class="slide-title">성능 최적화 & <span class="accent">코드 품질 관리</span></h1>
+    <div class="grid2">
+      <div class="card">
+        <div style="font-weight:700;font-size:21px;margin-bottom:16px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">성능 최적화</div>
+        <ul class="plain" style="font-size:19px;margin-bottom:0;">
+          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M9.5 9.5L3 21l11.5-6.5M14.5 14.5L21 3 9.5 9.5"/></svg></span>UI Flash 방지 — 질문 화면 진입 시 동기 초기화</li>
+          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>무한 루프 차단 — 꼬리질문 깊이 최대 2단계</li>
+          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M17 2.1l4 4-4 4M3 6h18M7 21.9l-4-4 4-4M21 18H3"/></svg></span>중복 API 억제 — 재진입 시 중복 생성 방지</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-weight:700;font-size:21px;margin-bottom:16px;color:var(--mute);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">코드 품질 관리</div>
+        <ul class="plain" style="font-size:19px;margin-bottom:0;">
+          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><span class="mono" style="font-size:17px;">flutter analyze</span> 매 수정마다 — 에러·경고 0건</li>
+          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>외과적 수정 — 변경 줄이 요청에서 직접 추적 가능</li>
+          <li><span class="ico"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>레이어 경계 검토 — AI 생성물 위치 오류를 직접 교정</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <!-- ⑪ 단일 부트스트랩 방법론 -->
@@ -394,7 +457,10 @@
     <div class="closing">
       <div class="eyebrow" style="justify-content:center;">CLOSING</div>
       <div class="app">v-view</div>
-      <div class="lede" style="margin-top:20px;font-size:24px;text-align:center;max-width:760px;">혼자서도 실전처럼, 시선까지 잡아주는 AI 면접 코치</div>
+      <div class="lede" style="margin-top:18px;font-size:24px;text-align:center;max-width:760px;">혼자서도 실전처럼, 시선까지 잡아주는 AI 면접 코치</div>
+      <div style="margin-top:22px;text-align:center;">
+        <span class="tag">통합 테스트 추가</span><span class="tag">실배포</span><span class="tag">음성·표정 분석 확장</span>
+      </div>
       <div class="thanks">감사합니다</div>
       <div class="who">v-view · 손정효</div>
     </div>
