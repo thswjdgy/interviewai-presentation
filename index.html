@@ -166,7 +166,7 @@
   .code-block .cmt{color:#6B7280;}
 
   /* TITLE */
-  .title-slide{justify-content:center;align-items:flex-start;position:relative;}
+  .title-slide{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative;height:100%;}
   .title-mark{
     width:60px;height:60px;border-radius:16px;background:var(--mint);
     display:flex;align-items:center;justify-content:center;margin-bottom:30px;
@@ -179,7 +179,7 @@
   .title-stack{margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;}
 
   /* CLOSING */
-  .closing{justify-content:center;align-items:center;text-align:center;}
+  .closing{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;height:100%;}
   .closing .app{font-family:'Outfit',sans-serif;font-weight:800;font-size:44px;}
   .closing .thanks{font-size:36px;font-weight:700;margin-top:22px;color:var(--mint);}
   .closing .who{margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:17px;color:var(--mute);}
@@ -191,7 +191,7 @@
 
   <!-- ① 타이틀 -->
   <div class="slide active">
-    <div class="title-slide" style="flex:1;display:flex;">
+    <div class="title-slide">
       <div class="title-mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.4"/><path d="M2 12c2.5-5 7-7.5 10-7.5S19.5 7 22 12c-2.5 5-7 7.5-10 7.5S4.5 17 2 12z"/></svg></div>
       <div class="title-app">v-view</div>
       <div class="title-tag">시선까지 잡아주는 AI 면접 코치 — 혼자서도, 실전처럼</div>
@@ -404,7 +404,7 @@
 
   <!-- ⑬ 마무리 -->
   <div class="slide">
-    <div class="closing" style="flex:1;display:flex;">
+    <div class="closing">
       <div class="eyebrow" style="justify-content:center;">FUTURE & CLOSING</div>
       <div class="app">v-view <span style="color:var(--mute);font-weight:500;font-size:23px;">— 향후 v2</span></div>
       <div style="margin-top:24px;">
